@@ -77,23 +77,28 @@
 }
 
 \newcommand\AssertStrEq[3]{%
-\AssertEq{#1}{\ifstrequal{#2}{#3}}%
+%\AssertEq{#1}{\ifstrequal{#2}{#3}}%
+\Test{#1}{}{\ifstrequal{#2}{#3}}%
 }
 
 \newcommand\AssertStrNEq[3]{%
 \AssertNEq{#1}{\ifstrequal{#2}{#3}}%
+%\Test{#1}{}{\ifstrequal{#2}{#3}}
 }
 
 \newcommand\AssertNumEq[3]{%
-\AssertEq{#1}{\ifnumequal{#2}{#3}}%
+%\AssertEq{#1}{\ifnumequal{#2}{#3}}%
+\Test{#1}{}{\ifnumequal{#2}{#3}}%
 }
 
 \newcommand\AssertNumGr[3]{%
-\AssertEq{#1}{\ifnumgreater{#2}{#3}}%
+%\AssertEq{#1}{\ifnumgreater{#2}{#3}}%
+\Test{#1}{}{\ifnumgreater{#2}{#3}}%
 }
 
 \newcommand\AssertNumLe[3]{%
-\AssertEq{#1}{\ifnumless{#2}{#3}}%
+%\AssertEq{#1}{\ifnumless{#2}{#3}}%
+\Test{#1}{}{\ifnumless{#2}{#3}}%
 }
 
 \endinput
