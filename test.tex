@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[notification={aux,log,doc}]{latexunit}	
+\begin{document}
+Nazdar světe
+\begin{testset}{Pokus č. 1}
+Jak se
+\AssertNEq{Pokus nerovnej}{\ifstrequal{ble}{cha}}%
+máš?
+\AssertEq{Pokus rovnej}{\ifstrequal{ble}{ble}}%
+\def\ble{ble}%
+\AssertNEq{Rovnost makra a textu}{\ifstrequal{ble}{\ble}}%
+\AssertEq{Rovnost makra a textu}{\IfStrEq{ble}{\ble}}%
+\AssertEq{Assert diakritiky}{\IfStrEq{Příliš žluťoučký kůň}{Příliš žluťoučký kůň}}%
+\AssertNEq{Assert detokenize}{\ifstrequal{ble}{\detokenize\ble}}%
+\AssertNEq{Ale ale}{\ifstrequal{ble}{\detokenize\ble}}%
+\AssertNumEq{Čísla rovná}{44}{44}%
+\edef\fortyfour{44}%
+\AssertNumEq{Čísla makra}{44}{\fortyfour}%
+\AssertNumGr{Čísla numexpr}{44}{\numexpr 46-3\relax}%
+\Test{Složitější test}{}{\ifboolexpr{test {\ifnumequal{1}{1}} and test {\ifnumequal{3}{3}}}}%
+%ss
+bla bla
+\end{testset}
+no atohle je konec
+\end{document}

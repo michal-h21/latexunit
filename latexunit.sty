@@ -1,0 +1,99 @@
+\ProvidesPackage{latexunit}
+\RequirePackage{etoolbox,xstring,xkeyval}
+
+% Definitions of counters and default macro parameters
+\def\lunit@currtestsetname{default}
+\newcount\lunit@testno
+\newcount\lunit@failedcount
+\edef\lunit@failedtests{}
+\def\latexunit@log@caption{[latexunit]}
+
+% Keyval definitions
+\xdef\latexunit@notifychain{log}
+\define@key{latexunit}{notification}[log]{\xdef\latexunit@notifychain{#1}}
+\ProcessOptionsX<latexunit>
+
+\newenvironment{testset}[1]{%
+  \TestNotification{Running test suite <\detokenize{#1}>}%
+  \def\lunit@currtestsetname{\unexpanded{#1}}%
+  \lunit@testno=0%
+  \def\lunit@failedtests{}%
+}{%
+ \def\do##1{\advance\lunit@failedcount by 1}%
+ \dolistloop{\lunit@failedtests}%
+ \TestResult{<\lunit@currtestsetname> Tests run: [\the\lunit@testno], (\the\lunit@failedcount) failed, (\the\numexpr\lunit@testno-\lunit@failedcount\relax) OK}%
+}
+
+
+\newcommand\DefNotification[2]{%
+\csgdef{lunit@not@#1}##1{#2}
+}
+
+\DefNotification{log}{%
+  \typeout{\latexunit@log@caption\space #1}% 
+}
+
+\DefNotification{doc}{\par\noindent#1\par}%
+
+\newcommand\lunitaux[1]{}%
+\DefNotification{aux}{%
+  \immediate\write\@mainaux{\noexpand\lunitaux{#1}}%
+}
+\newcommand\TestNotification[1]{%
+  \def\do##1{\csuse{lunit@not@##1}{#1}}
+  \expandafter\docsvlist\expandafter{\latexunit@notifychain}
+  %\typeout{\latexunit@log@caption\space #1}%
+}
+\newcommand\TestError[1]{%
+  \TestNotification{#1}%
+}
+
+\newcommand\TestResult[1]{%
+\TestNotification{#1}%
+}
+
+\newcommand\TestPassed[2]{%
+  \TestNotification{Passed [#1] \detokenize{#2}}%
+}
+\newcommand\TestFailed[2]{%
+  \TestError{Failed [#1] \detokenize{#2}}%
+}
+\newcommand\Test[3]{%
+  \advance\lunit@testno by 1%
+  #3{%
+    \TestPassed{\the\lunit@testno}{#1}%
+  }{% 
+   \TestFailed{\the\lunit@testno}{#1}%
+   \listadd\lunit@failedtests{\the\lunit@testno #1}%
+  }%
+  %\listgadd\lunit@failedtests{#1-#2}
+}%
+\newcommand\AssertEq[2]{%
+\Test{#1}{#2}{\ifboolexpr{test {#2} }}%
+}
+
+\newcommand\AssertNEq[2]{%
+\Test{#1}{#2}{\ifboolexpr{not ( test {#2} )}}%
+}
+
+\newcommand\AssertStrEq[3]{%
+\AssertEq{#1}{\ifstrequal{#2}{#3}}%
+}
+
+\newcommand\AssertStrNEq[3]{%
+\AssertNEq{#1}{\ifstrequal{#2}{#3}}%
+}
+
+\newcommand\AssertNumEq[3]{%
+\AssertEq{#1}{\ifnumequal{#2}{#3}}%
+}
+
+\newcommand\AssertNumGr[3]{%
+\AssertEq{#1}{\ifnumgreater{#2}{#3}}%
+}
+
+\newcommand\AssertNumLe[3]{%
+\AssertEq{#1}{\ifnumless{#2}{#3}}%
+}
+
+\endinput
