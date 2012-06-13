@@ -1,0 +1,13 @@
+author="Michal Hoftich",
+package="latexunit",
+email="michal.h21@gmail.com",
+name="LaTeXunit",
+version="0.1",
+description="Unit testing framework for LaTeX",
+preamble=[[
+\usepackage[utf8]{inputenc}
+]],
+documentation={"documentation.tex"},
+packages={
+ pack1="latexunit.sty",
+}
